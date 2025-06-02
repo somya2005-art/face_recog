@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Face Scan - Face Recognition System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <div class="logo">
+                <h2>Face Recognition</h2>
+            </div>
+            <nav class="nav-menu">
+                <a href="{{ url_for('userinfo') }}">User Info</a>
+                <a href="{{ url_for('scan') }}" class="active">Face Scan</a>
+                <a href="{{ url_for('logout') }}">Logout</a>
+            </nav>
+        </div>
+        
+        <div class="main-content">
+            <div class="header">
+                <h1>Face Scanning</h1>
+            </div>
+            
+            <div class="scan-container">
+                <div class="video-feed">
+                    <img src="{{ url_for('video_feed') }}" alt="Video Feed">
+                </div>
+                
+                <div class="scan-controls">
+                    <button id="scan-button" class="scan-button">START SCAN</button>
+                    <div id="scan-status" class="scan-status"></div>
+                </div>
+                
+                <div class="scan-instructions">
+                    <h3>Scanning Instructions</h3>
+                    <ol>
+                        <li>Position your face in the center of the frame</li>
+                        <li>Ensure good lighting conditions</li>
+                        <li>Keep your face still during scanning</li>
+                        <li>Remove any accessories that might obstruct your face</li>
+                    </ol>
+                </div>
+                
+                <div id="scan-results" class="scan-results" style="display: none;">
+                    <h3>Scan Results</h3>
+                    <div class="result-item">
+                        <span class="label">Name:</span>
+                        <span class="value" id="result-name"></span>
+                    </div>
+                    <div class="result-item">
+                        <span class="label">Email:</span>
+                        <span class="value" id="result-email"></span>
+                    </div>
+                    <div class="result-item">
+                        <span class="label">Department:</span>
+                        <span class="value" id="result-department"></span>
+                    </div>
+                    <div class="result-item">
+                        <span class="label">Role:</span>
+                        <span class="value" id="result-role"></span>
+                    </div>
+                    <div class="result-item">
+                        <span class="label">Scan Time:</span>
+                        <span class="value" id="result-scan-time"></span>
+                    </div>
+                    <div class="scan-image-container">
+                        <img id="scan-image" class="scan-image" src="" alt="Scan Image">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('scan-button').addEventListener('click', function() {
+            const button = this;
+            const status = document.getElementById('scan-status');
+            const results = document.getElementById('scan-results');
+            
+            button.disabled = true;
+            status.textContent = "Scanning in progress...";
+            
+            fetch('/start-scan', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ action: 'scan' })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    status.textContent = "Scan completed successfully!";
+                    results.style.display = 'block';
+                    
+                    // Update user information
+                    document.getElementById('result-name').textContent = data.user_info.name;
+                    document.getElementById('result-email').textContent = data.user_info.email;
+                    document.getElementById('result-department').textContent = data.user_info.department;
+                    document.getElementById('result-role').textContent = data.user_info.role;
+                    document.getElementById('result-scan-time').textContent = data.user_info.scan_time;
+                    
+                    // Update scan image if available
+                    if (data.user_info.scan_image) {
+                        document.getElementById('scan-image').src = '/static/images/' + data.user_info.scan_image;
+                    }
+                } else {
+                    status.textContent = data.message;
+                }
+                button.disabled = false;
+            })
+            .catch(error => {
+                status.textContent = "Error during scanning. Please try again.";
+                button.disabled = false;
+            });
+        });
+    </script>
+</body>
+</html> 

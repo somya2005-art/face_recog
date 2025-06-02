@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="login-form">
+        <h2>Login</h2>
+        <form method="POST" action="{{ url_for('login') }}">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button type="submit" class="btn">Login</button>
+        </form>
+        <p class="register-link">Don't have an account? <a href="{{ url_for('register') }}">Register here</a></p>
+    </div>
+</div>
+
+<style>
+     .register-link,
+    .login-link {
+        text-align: center;
+        margin-top: 20px;
+        color: #666;
+    }
+
+    .register-link a,
+    .login-link a {
+        color: #4CAF50;
+        text-decoration: none;
+    }
+
+    .register-link a:hover,
+    .login-link a:hover {
+        text-decoration: underline;
+    }
+
+    .profile-container {
+        max-width: 800px;
+        margin: 50px auto;
+        padding: 30px;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .profile-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+    }
+
+    .profile-header h2 {
+        color: #333;
+        margin: 0;
+    }
+
+    .profile-actions {
+        display: flex;
+        gap: 10px;
+    }
+
+    .profile-info {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+    }
+
+    .info-group {
+        background: #f9f9f9;
+        padding: 20px;
+        border-radius: 5px;
+    }
+
+    .info-group h3 {
+        color: #333;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #eee;
+    }
+
+    .info-item {
+        margin-bottom: 15px;
+    }
+
+    .info-item label {
+        display: block;
+        color: #666;
+        font-weight: 500;
+        margin-bottom: 5px;
+    }
+
+    .info-item span {
+        color: #333;
+    }
+
+    .btn-logout {
+        background: #f44336;
+    }
+
+    .btn-logout:hover {
+        background: #d32f2f;
+    }
+
+</style>
+{% endblock %}
